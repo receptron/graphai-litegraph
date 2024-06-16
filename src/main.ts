@@ -4,6 +4,7 @@ import { createHead } from "@vueuse/head";
 import { createI18n } from "vue-i18n";
 import App from "./App.vue";
 import "./index.css";
+import "litegraph.js/css/litegraph.css"
 import router from "./router";
 
 import i18nConf from "./i18n/index";
