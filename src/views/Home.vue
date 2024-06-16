@@ -48,6 +48,20 @@ export default defineComponent({
       node_watch.pos = [700, 200];
       graph.add(node_watch);
 
+      const openai_node = LiteGraph.createNode("graphai/OpenAIAgent");
+      graph.add(openai_node);
+      openai_node.pos = [700, 400];
+
+      const string_node = LiteGraph.createNode("basic/stringInput");
+      graph.add(string_node);
+      string_node.pos = [200, 600];
+      string_node.connect(0, openai_node, 2)
+
+      const string_node2 = LiteGraph.createNode("graphai/StringTemplateAgent");
+      graph.add(string_node2);
+      string_node2.pos = [200, 400];
+      string_node2.connect(0, openai_node, 0)
+
       node_const.connect(0, node_watch, 0);
 
       graph.start();

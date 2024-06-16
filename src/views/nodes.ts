@@ -47,8 +47,13 @@ export class TextInputAgentNode extends LGraphNode {
 export class OpenAIAgentNode extends LGraphNode {
   constructor() {
     super("OpenAI");
-    this.addInput("In", "string");
+    this.addInput("prompt", "string");
+    this.addInput("model", "string");
+    this.addInput("system", "string");
+    this.addInput("baseUrl", "string");
+
     this.addOutput(".choices.$0.message.content", "string");
+    this.addOutput(".", "object");
   }
 }
 
