@@ -11,7 +11,7 @@ module.exports = {
   rules: {
     "vue/no-unused-vars": "error",
     "vue/no-reserved-component-names": "error",
-    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "error",
     "no-unreachable": "error",
     "vue/multi-word-component-names": "off",

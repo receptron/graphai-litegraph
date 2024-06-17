@@ -1,18 +1,14 @@
 import { LGraphNode } from "litegraph.js";
 
-type Methods = {
-  [key: string]: (...args: any[]) => any;
-};
-
 type AgentData = {
   cname: string;
   name: string;
-  inputs?: [string, string][];
-  outputs?: [string, string][];
+  inputs?: string[][];
+  outputs?: string[][];
 };
-function createAgentNode(agentData: AgentData, baseClass: { new (...args: any[]): any }) {
+function createAgentNode(agentData: AgentData) {
   class DynamicSubclass extends LGraphNode {
-    constructor(...args: any[]) {
+    constructor() {
       super(agentData.name);
       (this as any).className = agentData.cname;
       if (agentData.inputs) {
@@ -31,11 +27,10 @@ function createAgentNode(agentData: AgentData, baseClass: { new (...args: any[])
 
   Object.defineProperty(DynamicSubclass, "name", { value: agentData.cname });
 
-  return DynamicSubclass as new (...args: any[]) => { className: string } & LGraphNode;
+  return DynamicSubclass;
 }
 
-const ret = {};
-[
+const ret = [
   {
     cname: "BasicSumAgent",
     name: "Sum",
@@ -71,7 +66,8 @@ const ret = {};
   },
   { cname: "StringTemplateAgentNode", name: "StringTemplate", inputs: [["${0}", "string"]], outputs: [["Output", "string"]] },
   { cname: "PropertyFilterAgentNode", name: "PropertyFilter", inputs: [["In", "string"]], outputs: [["Output", "string"]] },
-].map((agent: AgentData) => {
-  ret[agent.cname] = createAgentNode(agent, LGraphNode);
-});
-export default ret;
+].reduce((tmp: Record<string, new () => LGraphNode>, agent: AgentData) => {
+  tmp[agent.cname] = createAgentNode(agent);
+  return tmp;
+}, {});
+export default ret; 
