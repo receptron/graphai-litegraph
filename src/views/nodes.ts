@@ -1,8 +1,9 @@
-import { LGraphNode } from "litegraph.js";
+import { LGraphNode, LiteGraph } from "litegraph.js";
 
 type AgentData = {
   cname: string;
   name: string;
+  nodeName: string;
   inputs?: string[][];
   outputs?: string[][];
 };
@@ -30,10 +31,14 @@ function createAgentNode(agentData: AgentData) {
   return DynamicSubclass;
 }
 
-const ret = [
+LiteGraph.registered_node_types = {};
+LiteGraph.searchbox_extras = {};
+
+[
   {
     cname: "BasicSumAgent",
     name: "Sum",
+    nodeName: "basic/sum",
     inputs: [
       ["A", "number"],
       ["B", "number"],
@@ -43,16 +48,19 @@ const ret = [
   {
     cname: "StringInputNode",
     name: "StringInput",
+    nodeName: "basic/stringInput",
     outputs: [["Output", "string"]],
   },
   {
     cname: "TextInputAgentNode",
     name: "TextInput",
+    nodeName: "graphai/TextInputAgent",
     outputs: [["Output", "string"]],
   },
   {
     cname: "OpenAIAgentNode",
     name: "OpenAI",
+    nodeName: "graphai/OpenAIAgent",
     inputs: [
       ["prompt", "string"],
       ["model", "string"],
@@ -64,10 +72,29 @@ const ret = [
       [".choices.$0.message.content", "string"],
     ],
   },
-  { cname: "StringTemplateAgentNode", name: "StringTemplate", inputs: [["${0}", "string"]], outputs: [["Output", "string"]] },
-  { cname: "PropertyFilterAgentNode", name: "PropertyFilter", inputs: [["In", "string"]], outputs: [["Output", "string"]] },
+  {
+    cname: "StringTemplateAgentNode",
+    name: "StringTemplate",
+    nodeName: "graphai/StringTemplateAgent",
+    inputs: [["${0}", "string"]],
+    outputs: [["Output", "string"]],
+  },
+  {
+    cname: "PropertyFilterAgentNode",
+    name: "PropertyFilter",
+    nodeName: "graphai/PropertyFilterAgent",
+    inputs: [["In", "string"]],
+    outputs: [["Output", "string"]],
+  },
 ].reduce((tmp: Record<string, new () => LGraphNode>, agent: AgentData) => {
-  tmp[agent.cname] = createAgentNode(agent);
+  const node = createAgentNode(agent);
+  tmp[agent.cname] = node;
+  console.log(agent.nodeName);
+  LiteGraph.registerNodeType(agent.nodeName, node);
+
   return tmp;
 }, {});
-export default ret; 
+
+export { LiteGraph };
+
+//export default ret;
