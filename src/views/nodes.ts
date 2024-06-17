@@ -24,7 +24,7 @@ export class StringInputNode extends LGraphNode {
     this.addOutput("Output", "string");
     this.properties = { text: "" };
   }
-  onDrawBackground(ctx) {
+  onDrawBackground(ctx: CanvasRenderingContext2D) {
     if (this.flags.collapsed) {
       return;
     }
@@ -65,7 +65,7 @@ export class StringTemplateAgentNode extends LGraphNode {
     this.addOutput("Output", "string");
   }
 
-  onPropertyChanged(name, value) {
+  onPropertyChanged(name: string, value: string) {
     this.properties[name] = value;
   }
 }

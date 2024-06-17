@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 
-import { LGraph, LGraphCanvas, LiteGraph, LGraphNode } from "litegraph.js";
+import { LGraph, LGraphCanvas, LiteGraph } from "litegraph.js";
 import "litegraph.js/css/litegraph.css";
 
 import { BasicSumAgent, StringInputNode, TextInputAgentNode, OpenAIAgentNode, StringTemplateAgentNode, PropertyFilterAgentNode } from "./nodes";
@@ -37,7 +37,7 @@ export default defineComponent({
     onMounted(() => {
 
       const graph = new LGraph();
-      const canvas = new LGraphCanvas(canvasRef.value, graph);
+      new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("basic/sum");
       node_const.pos = [200, 200];
@@ -55,7 +55,7 @@ export default defineComponent({
       const string_node = LiteGraph.createNode("basic/stringInput");
       graph.add(string_node);
       string_node.pos = [200, 600];
-      string_node.connect(0, openai_node, 2)
+      string_node.connect(0, openai_node, 3)
 
       const string_node2 = LiteGraph.createNode("graphai/StringTemplateAgent");
       graph.add(string_node2);
