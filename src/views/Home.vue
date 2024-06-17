@@ -27,24 +27,24 @@ export default defineComponent({
       const graph = new LGraph();
       new LGraphCanvas(canvasRef.value, graph);
 
-      const node_const = LiteGraph.createNode("basic/sum");
+      const node_const = LiteGraph.createNode("basic/BasicSum");
       node_const.pos = [200, 200];
       graph.add(node_const);
 
-      const node_watch = LiteGraph.createNode("basic/sum");
+      const node_watch = LiteGraph.createNode("basic/BasicSum");
       node_watch.pos = [700, 200];
       graph.add(node_watch);
 
-      const openai_node = LiteGraph.createNode("graphai/OpenAIAgent");
+      const openai_node = LiteGraph.createNode("graphai/OpenAI");
       graph.add(openai_node);
       openai_node.pos = [700, 400];
 
-      const string_node = LiteGraph.createNode("basic/stringInput");
+      const string_node = LiteGraph.createNode("basic/StringInput");
       graph.add(string_node);
       string_node.pos = [200, 600];
       string_node.connect(0, openai_node, 3);
 
-      const string_node2 = LiteGraph.createNode("graphai/StringTemplateAgent");
+      const string_node2 = LiteGraph.createNode("graphai/StringTemplate");
       graph.add(string_node2);
       string_node2.pos = [200, 400];
       string_node2.connect(0, openai_node, 0);

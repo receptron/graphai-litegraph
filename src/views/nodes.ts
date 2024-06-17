@@ -1,17 +1,18 @@
 import { LGraphNode, LiteGraph } from "litegraph.js";
+import * as vanillaAgents from "@graphai/vanilla";
 
 type AgentData = {
-  cname: string;
   name: string;
-  nodeName: string;
+  category: string;
   inputs?: string[][];
   outputs?: string[][];
 };
+
 function createAgentNode(agentData: AgentData) {
   class DynamicSubclass extends LGraphNode {
     constructor() {
       super(agentData.name);
-      (this as any).className = agentData.cname;
+      (this as any).className = agentData.name;
       if (agentData.inputs) {
         agentData.inputs.forEach((input) => {
           this.addInput(input[0], input[1]);
@@ -22,11 +23,10 @@ function createAgentNode(agentData: AgentData) {
           this.addOutput(output[0], output[1]);
         });
       }
-      // this.properties = { precision: 1 };
     }
   }
 
-  Object.defineProperty(DynamicSubclass, "name", { value: agentData.cname });
+  Object.defineProperty(DynamicSubclass, "name", { value: agentData.name });
 
   return DynamicSubclass;
 }
@@ -37,9 +37,8 @@ LiteGraph.searchbox_extras = {};
 const initLiteGraph = () => {
   [
     {
-      cname: "BasicSumAgent",
-      name: "Sum",
-      nodeName: "basic/sum",
+      name: "BasicSum",
+      category: "basic",
       inputs: [
         ["A", "number"],
         ["B", "number"],
@@ -47,21 +46,18 @@ const initLiteGraph = () => {
       outputs: [["A+B", "number"]],
     },
     {
-      cname: "StringInputNode",
       name: "StringInput",
-      nodeName: "basic/stringInput",
+      category: "basic",
       outputs: [["Output", "string"]],
     },
     {
-      cname: "TextInputAgentNode",
       name: "TextInput",
-      nodeName: "graphai/TextInputAgent",
+      category: "graphai",
       outputs: [["Output", "string"]],
     },
     {
-      cname: "OpenAIAgentNode",
       name: "OpenAI",
-      nodeName: "graphai/OpenAIAgent",
+      category: "graphai",
       inputs: [
         ["prompt", "string"],
         ["model", "string"],
@@ -74,23 +70,34 @@ const initLiteGraph = () => {
       ],
     },
     {
-      cname: "StringTemplateAgentNode",
       name: "StringTemplate",
-      nodeName: "graphai/StringTemplateAgent",
+      category: "graphai",
       inputs: [["${0}", "string"]],
       outputs: [["Output", "string"]],
     },
     {
-      cname: "PropertyFilterAgentNode",
       name: "PropertyFilter",
-      nodeName: "graphai/PropertyFilterAgent",
+      category: "graphai",
       inputs: [["In", "string"]],
       outputs: [["Output", "string"]],
     },
   ].map((agent: AgentData) => {
-    LiteGraph.registerNodeType(agent.nodeName, createAgentNode(agent));
+    LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
+  });
+
+  Object.values(vanillaAgents).map((agent) => {
+    agent.category.forEach((category) => {
+      LiteGraph.registerNodeType(
+        [category, agent.name].join("/"),
+        createAgentNode({
+          name: agent.name,
+          category: category,
+          inputs: [["In", "string"]],
+          outputs: [["Output", "string"]],
+        }),
+      );
+    });
   });
 };
 
 export { LiteGraph, initLiteGraph };
-
