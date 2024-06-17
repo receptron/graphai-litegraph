@@ -86,17 +86,20 @@ const initLiteGraph = () => {
   });
 
   Object.values(vanillaAgents).map((agent) => {
-    agent.category.forEach((category) => {
-      LiteGraph.registerNodeType(
-        [category, agent.name].join("/"),
-        createAgentNode({
-          name: agent.name,
-          category: category,
-          inputs: [["In", "string"]],
-          outputs: [["Output", "string"]],
-        }),
-      );
-    });
+    if (agent.category) {
+      agent.category.forEach((category) => {
+        const name = agent.name.replace(/Agent$/, "")
+        LiteGraph.registerNodeType(
+          [category, name].join("/"),
+          createAgentNode({
+            name: name,
+            category: category,
+            inputs: [["In", "string"]],
+            outputs: [["Output", "string"]],
+          }),
+        );
+      });
+    }
   });
 };
 
