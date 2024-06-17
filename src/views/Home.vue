@@ -58,15 +58,14 @@ export default defineComponent({
       graph.add(shift_node);
       shift_node.pos = [400, 400];
       shift_node.connect(0, pop_node, 0);
-      
+
       const push_node = LiteGraph.createNode("array/push");
       graph.add(push_node);
       push_node.pos = [600, 400];
       push_node.connect(0, shift_node, 0);
-      
+
       // ing_node.connect(0, openai_node, 3);
 
-      
       graph.start();
     });
     return {
