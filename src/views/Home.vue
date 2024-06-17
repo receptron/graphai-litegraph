@@ -28,29 +28,45 @@ export default defineComponent({
       new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("basic/BasicSum");
-      node_const.pos = [200, 200];
+      node_const.pos = [200, 100];
       graph.add(node_const);
 
       const node_watch = LiteGraph.createNode("basic/BasicSum");
-      node_watch.pos = [700, 200];
+      node_watch.pos = [700, 100];
       graph.add(node_watch);
-
-      const openai_node = LiteGraph.createNode("graphai/OpenAI");
-      graph.add(openai_node);
-      openai_node.pos = [700, 400];
-
-      const string_node = LiteGraph.createNode("basic/StringInput");
-      graph.add(string_node);
-      string_node.pos = [200, 600];
-      string_node.connect(0, openai_node, 3);
-
-      const string_node2 = LiteGraph.createNode("graphai/StringTemplate");
-      graph.add(string_node2);
-      string_node2.pos = [200, 400];
-      string_node2.connect(0, openai_node, 0);
-
       node_const.connect(0, node_watch, 0);
 
+      const openai_node = LiteGraph.createNode("llm/OpenAI");
+      graph.add(openai_node);
+      openai_node.pos = [700, 200];
+
+      const string_node = LiteGraph.createNode("string/stringTemplate");
+      graph.add(string_node);
+      string_node.pos = [200, 200];
+      string_node.connect(0, openai_node, 3);
+
+      const string_node2 = LiteGraph.createNode("string/stringTemplate");
+      graph.add(string_node2);
+      string_node2.pos = [200, 300];
+      string_node2.connect(0, openai_node, 0);
+
+      const pop_node = LiteGraph.createNode("array/pop");
+      graph.add(pop_node);
+      pop_node.pos = [200, 400];
+
+      const shift_node = LiteGraph.createNode("array/shift");
+      graph.add(shift_node);
+      shift_node.pos = [400, 400];
+      shift_node.connect(0, pop_node, 0);
+      
+      const push_node = LiteGraph.createNode("array/push");
+      graph.add(push_node);
+      push_node.pos = [600, 400];
+      push_node.connect(0, shift_node, 0);
+      
+      // ing_node.connect(0, openai_node, 3);
+
+      
       graph.start();
     });
     return {

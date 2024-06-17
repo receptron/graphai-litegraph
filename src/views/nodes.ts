@@ -46,18 +46,8 @@ const initLiteGraph = () => {
       outputs: [["A+B", "number"]],
     },
     {
-      name: "StringInput",
-      category: "basic",
-      outputs: [["Output", "string"]],
-    },
-    {
-      name: "TextInput",
-      category: "graphai",
-      outputs: [["Output", "string"]],
-    },
-    {
       name: "OpenAI",
-      category: "graphai",
+      category: "llm",
       inputs: [
         ["prompt", "string"],
         ["model", "string"],
@@ -69,18 +59,6 @@ const initLiteGraph = () => {
         [".choices.$0.message.content", "string"],
       ],
     },
-    {
-      name: "StringTemplate",
-      category: "graphai",
-      inputs: [["${0}", "string"]],
-      outputs: [["Output", "string"]],
-    },
-    {
-      name: "PropertyFilter",
-      category: "graphai",
-      inputs: [["In", "string"]],
-      outputs: [["Output", "string"]],
-    },
   ].map((agent: AgentData) => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
   });
@@ -89,6 +67,7 @@ const initLiteGraph = () => {
     if (agent.category) {
       agent.category.forEach((category) => {
         const name = agent.name.replace(/Agent$/, "")
+        console.log([category, name].join("/"))
         LiteGraph.registerNodeType(
           [category, name].join("/"),
           createAgentNode({
