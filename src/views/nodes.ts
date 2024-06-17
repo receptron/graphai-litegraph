@@ -34,67 +34,63 @@ function createAgentNode(agentData: AgentData) {
 LiteGraph.registered_node_types = {};
 LiteGraph.searchbox_extras = {};
 
-[
-  {
-    cname: "BasicSumAgent",
-    name: "Sum",
-    nodeName: "basic/sum",
-    inputs: [
-      ["A", "number"],
-      ["B", "number"],
-    ],
-    outputs: [["A+B", "number"]],
-  },
-  {
-    cname: "StringInputNode",
-    name: "StringInput",
-    nodeName: "basic/stringInput",
-    outputs: [["Output", "string"]],
-  },
-  {
-    cname: "TextInputAgentNode",
-    name: "TextInput",
-    nodeName: "graphai/TextInputAgent",
-    outputs: [["Output", "string"]],
-  },
-  {
-    cname: "OpenAIAgentNode",
-    name: "OpenAI",
-    nodeName: "graphai/OpenAIAgent",
-    inputs: [
-      ["prompt", "string"],
-      ["model", "string"],
-      ["system", "string"],
-      ["baseUrl", "string"],
-    ],
-    outputs: [
-      ["Output", "object"],
-      [".choices.$0.message.content", "string"],
-    ],
-  },
-  {
-    cname: "StringTemplateAgentNode",
-    name: "StringTemplate",
-    nodeName: "graphai/StringTemplateAgent",
-    inputs: [["${0}", "string"]],
-    outputs: [["Output", "string"]],
-  },
-  {
-    cname: "PropertyFilterAgentNode",
-    name: "PropertyFilter",
-    nodeName: "graphai/PropertyFilterAgent",
-    inputs: [["In", "string"]],
-    outputs: [["Output", "string"]],
-  },
-].reduce((tmp: Record<string, new () => LGraphNode>, agent: AgentData) => {
-  const node = createAgentNode(agent);
-  tmp[agent.cname] = node;
-  console.log(agent.nodeName);
-  LiteGraph.registerNodeType(agent.nodeName, node);
+const initLiteGraph = () => {
+  [
+    {
+      cname: "BasicSumAgent",
+      name: "Sum",
+      nodeName: "basic/sum",
+      inputs: [
+        ["A", "number"],
+        ["B", "number"],
+      ],
+      outputs: [["A+B", "number"]],
+    },
+    {
+      cname: "StringInputNode",
+      name: "StringInput",
+      nodeName: "basic/stringInput",
+      outputs: [["Output", "string"]],
+    },
+    {
+      cname: "TextInputAgentNode",
+      name: "TextInput",
+      nodeName: "graphai/TextInputAgent",
+      outputs: [["Output", "string"]],
+    },
+    {
+      cname: "OpenAIAgentNode",
+      name: "OpenAI",
+      nodeName: "graphai/OpenAIAgent",
+      inputs: [
+        ["prompt", "string"],
+        ["model", "string"],
+        ["system", "string"],
+        ["baseUrl", "string"],
+      ],
+      outputs: [
+        ["Output", "object"],
+        [".choices.$0.message.content", "string"],
+      ],
+    },
+    {
+      cname: "StringTemplateAgentNode",
+      name: "StringTemplate",
+      nodeName: "graphai/StringTemplateAgent",
+      inputs: [["${0}", "string"]],
+      outputs: [["Output", "string"]],
+    },
+    {
+      cname: "PropertyFilterAgentNode",
+      name: "PropertyFilter",
+      nodeName: "graphai/PropertyFilterAgent",
+      inputs: [["In", "string"]],
+      outputs: [["Output", "string"]],
+    },
+  ].map((agent: AgentData) => {
+    LiteGraph.registerNodeType(agent.nodeName, createAgentNode(agent));
+  });
+};
 
-  return tmp;
-}, {});
+export { LiteGraph, initLiteGraph };
 
-export { LiteGraph };
-
-//export default ret;

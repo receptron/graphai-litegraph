@@ -13,7 +13,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { LGraph, LGraphCanvas } from "litegraph.js";
 import "litegraph.js/css/litegraph.css";
 
-import { LiteGraph } from "./nodes";
+import { LiteGraph, initLiteGraph } from "./nodes";
 
 export default defineComponent({
   name: "HomePage",
@@ -21,9 +21,9 @@ export default defineComponent({
   setup() {
     const canvasRef = ref();
 
-    // init menu
-
     onMounted(() => {
+      initLiteGraph();
+
       const graph = new LGraph();
       new LGraphCanvas(canvasRef.value, graph);
 
