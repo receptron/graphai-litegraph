@@ -1,81 +1,77 @@
 import { LGraphNode } from "litegraph.js";
 
-export class BasicSumAgent extends LGraphNode {
-  constructor() {
-    super("Sum");
-    this.addInput("A", "number");
-    this.addInput("B", "number");
-    this.addOutput("A+B", "number");
-    this.properties = { precision: 1 };
-  }
+type Methods = {
+  [key: string]: (...args: any[]) => any;
+};
 
-  onExecute() {
-    let A = this.getInputData(0);
-    if (A === undefined) A = 0;
-    let B = this.getInputData(1);
-    if (B === undefined) B = 0;
-    this.setOutputData(0, A + B);
-  }
-}
-
-export class StringInputNode extends LGraphNode {
-  constructor() {
-    super("String Input");
-    this.addOutput("Output", "string");
-    this.properties = { text: "" };
-  }
-  onDrawBackground(ctx: CanvasRenderingContext2D) {
-    if (this.flags.collapsed) {
-      return;
+type AgentData = {
+  cname: string;
+  name: string;
+  inputs?: [string, string][];
+  outputs?: [string, string][];
+};
+function createAgentNode(agentData: AgentData, baseClass: { new (...args: any[]): any }) {
+  class DynamicSubclass extends LGraphNode {
+    constructor(...args: any[]) {
+      super(agentData.name);
+      (this as any).className = agentData.cname;
+      if (agentData.inputs) {
+        agentData.inputs.forEach((input) => {
+          this.addInput(input[0], input[1]);
+        });
+      }
+      if (agentData.outputs) {
+        agentData.outputs.forEach((output) => {
+          this.addOutput(output[0], output[1]);
+        });
+      }
+      // this.properties = { precision: 1 };
     }
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, this.size[0], this.size[1]);
-    ctx.fillStyle = "#FFF";
-    ctx.font = "14px Arial";
-    ctx.fillText(this.properties.text, 10, 30);
   }
+
+  Object.defineProperty(DynamicSubclass, "name", { value: agentData.cname });
+
+  return DynamicSubclass as new (...args: any[]) => { className: string } & LGraphNode;
 }
 
-export class TextInputAgentNode extends LGraphNode {
-  constructor() {
-    super("TextInput");
-    this.properties = { message: "?:" };
-    this.addOutput("", "string");
-  }
-}
-
-export class OpenAIAgentNode extends LGraphNode {
-  constructor() {
-    super("OpenAI");
-    this.addInput("prompt", "string");
-    this.addInput("model", "string");
-    this.addInput("system", "string");
-    this.addInput("baseUrl", "string");
-
-    this.addOutput(".choices.$0.message.content", "string");
-    this.addOutput(".", "object");
-  }
-}
-
-export class StringTemplateAgentNode extends LGraphNode {
-  constructor() {
-    super("StringTemplate");
-    this.properties = { template: "${0}" };
-    this.addInput("${0}", "string");
-    this.addOutput("Output", "string");
-  }
-
-  onPropertyChanged(name: string, value: string) {
-    this.properties[name] = value;
-  }
-}
-
-export class PropertyFilterAgentNode extends LGraphNode {
-  constructor() {
-    super("PropertyFilter");
-    this.addInput("In", "string");
-    this.addOutput("", "string");
-  }
-
-  onExecute = function () {};
-}
+const ret = {};
+[
+  {
+    cname: "BasicSumAgent",
+    name: "Sum",
+    inputs: [
+      ["A", "number"],
+      ["B", "number"],
+    ],
+    outputs: [["A+B", "number"]],
+  },
+  {
+    cname: "StringInputNode",
+    name: "StringInput",
+    outputs: [["Output", "string"]],
+  },
+  {
+    cname: "TextInputAgentNode",
+    name: "TextInput",
+    outputs: [["Output", "string"]],
+  },
+  {
+    cname: "OpenAIAgentNode",
+    name: "OpenAI",
+    inputs: [
+      ["prompt", "string"],
+      ["model", "string"],
+      ["system", "string"],
+      ["baseUrl", "string"],
+    ],
+    outputs: [
+      ["Output", "object"],
+      [".choices.$0.message.content", "string"],
+    ],
+  },
+  { cname: "StringTemplateAgentNode", name: "StringTemplate", inputs: [["${0}", "string"]], outputs: [["Output", "string"]] },
+  { cname: "PropertyFilterAgentNode", name: "PropertyFilter", inputs: [["In", "string"]], outputs: [["Output", "string"]] },
+].map((agent: AgentData) => {
+  ret[agent.cname] = createAgentNode(agent, LGraphNode);
+});
+export default ret;

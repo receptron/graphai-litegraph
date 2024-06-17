@@ -13,7 +13,9 @@ import { defineComponent, ref, onMounted } from "vue";
 import { LGraph, LGraphCanvas, LiteGraph } from "litegraph.js";
 import "litegraph.js/css/litegraph.css";
 
-import { BasicSumAgent, StringInputNode, TextInputAgentNode, OpenAIAgentNode, StringTemplateAgentNode, PropertyFilterAgentNode } from "./nodes";
+// import { BasicSumAgent, StringInputNode, TextInputAgentNode, OpenAIAgentNode, StringTemplateAgentNode, PropertyFilterAgentNode } from "./nodes";
+import * as nodes from "./nodes";
+console.log(nodes.default);
 
 export default defineComponent({
   name: "HomePage",
@@ -25,17 +27,16 @@ export default defineComponent({
     LiteGraph.registered_node_types = {};
     LiteGraph.searchbox_extras = {};
 
-    LiteGraph.registerNodeType("basic/sum", BasicSumAgent);
-    LiteGraph.registerNodeType("basic/stringInput", StringInputNode);
-    
-    LiteGraph.registerNodeType("graphai/TextInputAgent", TextInputAgentNode);
-    LiteGraph.registerNodeType("graphai/OpenAIAgent", OpenAIAgentNode);
-    
-    LiteGraph.registerNodeType("graphai/StringTemplateAgent", StringTemplateAgentNode);
-    LiteGraph.registerNodeType("graphai/PropertyFilterAgent", PropertyFilterAgentNode);
-    
-    onMounted(() => {
+    LiteGraph.registerNodeType("basic/sum", nodes.default.BasicSumAgent);
+    LiteGraph.registerNodeType("basic/stringInput", nodes.default.StringInputNode);
 
+    // LiteGraph.registerNodeType("graphai/TextInputAgent", TextInputAgentNode);
+    LiteGraph.registerNodeType("graphai/OpenAIAgent", nodes.default.OpenAIAgentNode);
+
+    LiteGraph.registerNodeType("graphai/StringTemplateAgent", nodes.default.StringTemplateAgentNode);
+    // LiteGraph.registerNodeType("graphai/PropertyFilterAgent", PropertyFilterAgentNode);
+
+    onMounted(() => {
       const graph = new LGraph();
       new LGraphCanvas(canvasRef.value, graph);
 
@@ -55,12 +56,12 @@ export default defineComponent({
       const string_node = LiteGraph.createNode("basic/stringInput");
       graph.add(string_node);
       string_node.pos = [200, 600];
-      string_node.connect(0, openai_node, 3)
+      string_node.connect(0, openai_node, 3);
 
       const string_node2 = LiteGraph.createNode("graphai/StringTemplateAgent");
       graph.add(string_node2);
       string_node2.pos = [200, 400];
-      string_node2.connect(0, openai_node, 0)
+      string_node2.connect(0, openai_node, 0);
 
       node_const.connect(0, node_watch, 0);
 
