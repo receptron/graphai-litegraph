@@ -4,6 +4,7 @@
       <!-- Use Tailwind CSS h-40 (=10rem=160px) instead of .logo. -->
       <canvas id="mycanvas" width="1024" height="720" style="border: 1px solid" ref="canvasRef"></canvas>
     </div>
+    <Button @click="download" class="border-2 border-blue-200">Download</Button>
   </div>
 </template>
 
@@ -21,10 +22,11 @@ export default defineComponent({
   setup() {
     const canvasRef = ref();
 
+    const graph = new LGraph();
+
     onMounted(() => {
       initLiteGraph();
 
-      const graph = new LGraph();
       new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("basic/BasicSum");
@@ -68,7 +70,14 @@ export default defineComponent({
 
       graph.start();
     });
+
+    const download = () => {
+      const data = graph.serialize();
+      console.log(data);
+    };
+
     return {
+      download,
       canvasRef,
     };
   },
