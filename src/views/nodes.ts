@@ -24,6 +24,7 @@ function createAgentNode(agentData: AgentData) {
         });
       }
       this.addWidget("text", "hoge", "11");
+      this.addWidget("text", "Text", "multiline", function () {}, { multiline: true });
       this.addWidget("text", "system", "11");
     }
   }
@@ -35,6 +36,34 @@ function createAgentNode(agentData: AgentData) {
 
 LiteGraph.registered_node_types = {};
 LiteGraph.searchbox_extras = {};
+
+const inputs2inputs = (inputs: any) => {
+  if (!inputs) {
+    return [["In", ["string", "number", "object"]]];
+  }
+  if (inputs.type === "object") {
+    return Object.keys(inputs.properties).map((property) => {
+      return [property, inputs.properties[property].type];
+    });
+  }
+  if (inputs.anyOf) {
+    return [["In", inputs.anyOf.map((a: { type: string }) => a.type)]];
+  }
+  return [["In", "string"]];
+};
+
+const outputs2outputs = (outputs: any) => {
+  if (!outputs) {
+    return [["Output", "string"]];
+  }
+  if (outputs.type === "object") {
+    return Object.keys(outputs.properties).map((property) => {
+      //console.log()
+      return [property, outputs.properties[property].type];
+    });
+  }
+  return [["Output", ["string", "number", "object"]]];
+};
 
 const initLiteGraph = () => {
   [
@@ -65,41 +94,16 @@ const initLiteGraph = () => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
   });
 
-  const inputs2inputs = (inputs: any) => {
-    if (!inputs) {
-      return [["In", ["string", "number", "object"]]];
-    }
-    if (inputs.type === "object") {
-      return Object.keys(inputs.properties).map((property) => {
-        return [property, inputs.properties[property].type];
-      });
-    }
-    if (inputs.anyOf) {
-      return [["In", inputs.anyOf.map((a: { type: string }) => a.type)]];
-    }
-    return [["In", "string"]];
-  };
-
-  const outputs2outputs = (outputs: any) => {
-    if (!outputs) {
-      return [["Output", "string"]];
-    }
-    if (outputs.type === "object") {
-      return Object.keys(outputs.properties).map((property) => {
-        //console.log()
-        return [property, outputs.properties[property].type];
-      });
-    }
-    return [["Output", ["string", "number", "object"]]];
-  };
-
+  const lite2agent = {};
   Object.values(vanillaAgents).map((agent) => {
     if (agent.category) {
       agent.category.forEach((category) => {
         const name = agent.name.replace(/Agent$/, "");
         console.log(inputs2inputs(agent.inputs));
+        const nodeType = [category, name].join("/");
+        lite2agent[nodeType] = agent;
         LiteGraph.registerNodeType(
-          [category, name].join("/"),
+          nodeType,
           createAgentNode({
             name: name,
             category: category,
@@ -110,6 +114,23 @@ const initLiteGraph = () => {
       });
     }
   });
+  return { lite2agent };
 };
 
-export { LiteGraph, initLiteGraph };
+const liteGraph2GraphData = (liteGraph, lite2agent) => {
+  const nodes = liteGraph.nodes.map((node) => {
+    const agent = lite2agent[node.type];
+    if (agent) {
+      return {
+        agent: agent.name,
+      };
+    }
+    return {
+      agent: node.type,
+    };
+  });
+  console.log(nodes);
+  console.log(liteGraph, lite2agent);
+};
+
+export { LiteGraph, initLiteGraph, liteGraph2GraphData };

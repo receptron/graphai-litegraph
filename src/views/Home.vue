@@ -14,26 +14,27 @@ import { defineComponent, ref, onMounted } from "vue";
 import { LGraph, LGraphCanvas } from "litegraph.js";
 import "litegraph.js/css/litegraph.css";
 
-import { LiteGraph, initLiteGraph } from "./nodes";
+import { LiteGraph, initLiteGraph, liteGraph2GraphData } from "./nodes";
 
 export default defineComponent({
   name: "HomePage",
   components: {},
   setup() {
     const canvasRef = ref();
-
+    let lite2agent = {};
     const graph = new LGraph();
 
     onMounted(() => {
-      initLiteGraph();
+      const ret = initLiteGraph();
+      lite2agent = ret.lite2agent;
 
       new LGraphCanvas(canvasRef.value, graph);
 
-      const node_const = LiteGraph.createNode("basic/BasicSum");
+      const node_const = LiteGraph.createNode("data/copy");
       node_const.pos = [200, 100];
       graph.add(node_const);
 
-      const node_watch = LiteGraph.createNode("basic/BasicSum");
+      const node_watch = LiteGraph.createNode("data/total");
       node_watch.pos = [700, 100];
       graph.add(node_watch);
       node_const.connect(0, node_watch, 0);
@@ -54,17 +55,17 @@ export default defineComponent({
 
       const pop_node = LiteGraph.createNode("array/pop");
       graph.add(pop_node);
-      pop_node.pos = [200, 400];
+      pop_node.pos = [400, 400];
 
       const shift_node = LiteGraph.createNode("array/shift");
       graph.add(shift_node);
-      shift_node.pos = [400, 400];
-      shift_node.connect(0, pop_node, 0);
+      shift_node.pos = [200, 400];
+      shift_node.connect(1, pop_node, 0);
 
       const push_node = LiteGraph.createNode("array/push");
       graph.add(push_node);
       push_node.pos = [600, 400];
-      push_node.connect(0, shift_node, 0);
+      pop_node.connect(1, push_node, 0);
 
       // ing_node.connect(0, openai_node, 3);
 
@@ -74,6 +75,8 @@ export default defineComponent({
     const download = () => {
       const data = graph.serialize();
       console.log(data);
+      const json = JSON.stringify(graph.serialize(), null, 2);
+      liteGraph2GraphData(data, lite2agent);
     };
 
     return {
