@@ -1,3 +1,4 @@
+import { ComputedNodeData } from "graphai";
 import { LGraphNode, LiteGraph } from "litegraph.js";
 import * as vanillaAgents from "@graphai/vanilla";
 
@@ -94,7 +95,7 @@ const initLiteGraph = () => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
   });
 
-  const lite2agent = {};
+  const lite2agent: Record<string, any> = {};
   Object.values(vanillaAgents).map((agent) => {
     if (agent.category) {
       agent.category.forEach((category) => {
@@ -117,18 +118,28 @@ const initLiteGraph = () => {
   return { lite2agent };
 };
 
-const liteGraph2GraphData = (liteGraph, lite2agent) => {
-  const nodes = liteGraph.nodes.map((node) => {
-    const agent = lite2agent[node.type];
-    if (agent) {
-      return {
-        agent: agent.name,
-      };
+const liteGraph2GraphData = (liteGraph: any, lite2agent: any) => {
+  // [link index, out node, out position, in node, in position]かな。
+  const linkObj = liteGraph.links.reduce((tmp: Record<string, string[]>, link: string[]) => {
+    if (tmp[link[3]] === undefined) {
+      tmp[link[3]] = [];
     }
-    return {
-      agent: node.type,
-    };
-  });
+    tmp[link[3]].push(link[1])
+    return tmp;
+  }, {});
+  // console.log(linkObj);
+  
+  const nodes = liteGraph.nodes.reduce((tmp: Record<string, ComputedNodeData>, node: any) => {
+    // [link index, out node, out position, in node, in position]
+    // innode, inputs [out node]
+    const inputs = linkObj[node.id];
+    const agent = lite2agent[node.type];
+    tmp[`node_${node.id}`] = {
+      agent: agent ? agent.name : node.type,
+      inputs: inputs ? inputs.map((id: string) => `node_${id}`) : undefined,
+    }
+    return tmp;
+  }, {});
   console.log(nodes);
   console.log(liteGraph, lite2agent);
 };

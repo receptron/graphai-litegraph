@@ -75,7 +75,7 @@ export default defineComponent({
     const download = () => {
       const data = graph.serialize();
       console.log(data);
-      const json = JSON.stringify(graph.serialize(), null, 2);
+      // const json = JSON.stringify(graph.serialize(), null, 2);
       liteGraph2GraphData(data, lite2agent);
     };
 
