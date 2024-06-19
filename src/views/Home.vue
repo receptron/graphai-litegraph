@@ -21,13 +21,19 @@ export default defineComponent({
   components: {},
   setup() {
     const canvasRef = ref();
+
     let lite2agent = {};
+    let lite2inputs = {};
+    let lite2output = {};
+    
     const graph = new LGraph();
 
     onMounted(() => {
       const ret = initLiteGraph();
       lite2agent = ret.lite2agent;
-
+      lite2inputs = ret.lite2inputs;
+      lite2output = ret.lite2output;
+      
       new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("data/copy");
@@ -74,9 +80,8 @@ export default defineComponent({
 
     const download = () => {
       const data = graph.serialize();
-      console.log(data);
-      // const json = JSON.stringify(graph.serialize(), null, 2);
-      liteGraph2GraphData(data, lite2agent);
+      const graphData = liteGraph2GraphData(data, lite2agent, lite2inputs, lite2output);
+      console.log(graphData);
     };
 
     return {
