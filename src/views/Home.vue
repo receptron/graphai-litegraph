@@ -14,8 +14,8 @@ import { defineComponent, ref, onMounted } from "vue";
 import { LGraph, LGraphCanvas } from "litegraph.js";
 import "litegraph.js/css/litegraph.css";
 
-import { liteGraph2GraphData } from "./toGraphAi";
-import { LiteGraph, setAgentToLiteGraph } from "./setAgentToLiteGraph";
+import { liteGraph2GraphData } from "../utils/toGraphAi";
+import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
 export default defineComponent({
   name: "HomePage",
