@@ -26,9 +26,7 @@ export default defineComponent({
   setup() {
     const canvasRef = ref();
 
-    let lite2agent = {};
-    let lite2inputs = {};
-    let lite2output = {};
+    let ret = {};
 
     const graph = new LGraph();
 
@@ -37,11 +35,8 @@ export default defineComponent({
         tmp[agent.agentId] = agent;
         return tmp;
       }, {});
-      const ret = setAgentToLiteGraph(a);
-      lite2agent = ret.lite2agent;
-      lite2inputs = ret.lite2inputs;
-      lite2output = ret.lite2output;
-
+      ret = setAgentToLiteGraph(a);
+      
       new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("data/copy");
@@ -88,8 +83,10 @@ export default defineComponent({
 
     const download = () => {
       const data = graph.serialize();
-      const graphData = liteGraph2GraphData(data, lite2agent, lite2inputs, lite2output);
+      const graphData = liteGraph2GraphData(data, ret);
       console.log(graphData);
+      console.log( JSON.stringify(graphData, 2, null));
+
     };
 
     return {
