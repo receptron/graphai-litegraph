@@ -26,16 +26,16 @@ export default defineComponent({
   setup() {
     const canvasRef = ref();
 
-    let ret = {};
+    let lite2graph = {};
 
     const graph = new LGraph();
 
     onMounted(() => {
-      const a = agentlist.agents.reduce((tmp: any, agent) => {
+      const agents = agentlist.agents.reduce((tmp: any, agent) => {
         tmp[agent.agentId] = agent;
         return tmp;
       }, {});
-      ret = setAgentToLiteGraph(a);
+      lite2graph = setAgentToLiteGraph(agents);
 
       new LGraphCanvas(canvasRef.value, graph);
 
@@ -52,15 +52,15 @@ export default defineComponent({
       graph.add(openai_node);
       openai_node.pos = [700, 200];
 
-      const string_node = LiteGraph.createNode("string/stringTemplate");
+      const string_node = LiteGraph.createNode("static/string");
       graph.add(string_node);
       string_node.pos = [200, 200];
-      string_node.connect(0, openai_node, 3);
+      string_node.connect(0, openai_node, 10);
 
-      const string_node2 = LiteGraph.createNode("string/stringTemplate");
+      const string_node2 = LiteGraph.createNode("static/string");
       graph.add(string_node2);
       string_node2.pos = [200, 300];
-      string_node2.connect(0, openai_node, 0);
+      string_node2.connect(0, openai_node, 1);
 
       const pop_node = LiteGraph.createNode("array/pop");
       graph.add(pop_node);
@@ -83,7 +83,7 @@ export default defineComponent({
 
     const download = () => {
       const data = graph.serialize();
-      const graphData = liteGraph2GraphData(data, ret);
+      const graphData = liteGraph2GraphData(data, lite2graph);
       console.log(graphData);
       console.log(JSON.stringify(graphData, 2, null));
     };
