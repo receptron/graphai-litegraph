@@ -58,7 +58,7 @@ const liteGraph2GraphData = (
           }
         }
         if (lite2params[node.type][key]["type"] === "number") {
-          if (value !== 0) {
+          if (value !== "") {
             tmp[lite2params[node.type][key].key] = value;
           }
         }
@@ -77,7 +77,6 @@ const liteGraph2GraphData = (
         value:  node.widgets_values ? node.widgets_values[0] ?? "" : "",
       };
     } else {
-      console.log(node);      
       const agent = lite2agent[node.type || ""];
       tmp[`node_${node.id}`] = {
         agent: agent ? agent.name : node.type || "",
