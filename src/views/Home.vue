@@ -17,7 +17,8 @@ import "litegraph.js/css/litegraph.css";
 import { liteGraph2GraphData } from "../utils/toGraphAi";
 import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
-import * as vanillaAgents from "@graphai/vanilla";
+// import * as vanillaAgents from "@graphai/vanilla";
+import { agentlist } from "../utils/agentlist";
 
 export default defineComponent({
   name: "HomePage",
@@ -32,7 +33,11 @@ export default defineComponent({
     const graph = new LGraph();
 
     onMounted(() => {
-      const ret = setAgentToLiteGraph(vanillaAgents);
+      const a = agentlist.agents.reduce((tmp: any, agent) => {
+        tmp[agent.agentId] = agent;
+        return tmp;
+      }, {});
+      const ret = setAgentToLiteGraph(a);
       lite2agent = ret.lite2agent;
       lite2inputs = ret.lite2inputs;
       lite2output = ret.lite2output;
@@ -48,7 +53,7 @@ export default defineComponent({
       graph.add(node_watch);
       node_const.connect(0, node_watch, 0);
 
-      const openai_node = LiteGraph.createNode("llm/OpenAI");
+      const openai_node = LiteGraph.createNode("llm/openAI");
       graph.add(openai_node);
       openai_node.pos = [700, 200];
 

@@ -41,7 +41,7 @@ const jsonSchemaToIO = (inputs: any, typeName: string) => {
   if (!inputs) {
     return [[typeName, ["string", "number", "object"]]];
   }
-  if (inputs.type === "object") {
+  if (inputs.type === "object"  && inputs.properties) {
     return Object.keys(inputs.properties).map((property) => {
       return [property, inputs.properties[property].type];
     });
@@ -63,7 +63,7 @@ const jsonSchemaToI2IOType = (inputs: any) => {
   if (!inputs) {
     return [];
   }
-  if (inputs.type === "object") {
+  if (inputs.type === "object" && inputs.properties) {
     return Object.keys(inputs.properties);
   }
   return [];
@@ -71,20 +71,6 @@ const jsonSchemaToI2IOType = (inputs: any) => {
 
 const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
   [
-    {
-      name: "OpenAI",
-      category: "llm",
-      inputs: [
-        ["prompt", "string"],
-        ["model", "string"],
-        ["system", "string"],
-        ["baseUrl", "string"],
-      ],
-      outputs: [
-        ["Output", "object"],
-        [".choices.$0.message.content", "string"],
-      ],
-    },
     {
       name: "number",
       category: "static",
