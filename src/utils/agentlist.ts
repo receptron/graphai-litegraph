@@ -164,6 +164,12 @@ export const agentlist = {
         },
         required: ["id", "object", "created", "model", "choices", "usage"],
       },
+      format: {
+        llmResponse: {
+          key: "choices.$0.message.content",
+          type: "string",
+        },
+      },
       stream: true,
     },
     {

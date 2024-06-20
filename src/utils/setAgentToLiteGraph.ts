@@ -59,6 +59,13 @@ const outputs2outputs = (outputs: any) => {
   return jsonSchemaToIO(outputs, "Output");
 };
 
+const format2output = (format: any) => {
+  return Object.keys(format).map((property) => {
+    const data = format[property];
+    return [property, data.type];
+  });
+};
+
 const jsonSchemaToI2IOType = (inputs: any) => {
   if (!inputs) {
     return [];
@@ -67,6 +74,12 @@ const jsonSchemaToI2IOType = (inputs: any) => {
     return Object.keys(inputs.properties);
   }
   return [];
+};
+const format2output2 = (format: any) => {
+  return Object.keys(format).map((property) => {
+    const data = format[property];
+    return data.key
+  });
 };
 
 const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
@@ -89,13 +102,14 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
   const lite2inputs: Record<string, string[]> = {};
   const lite2output: Record<string, string[]> = {};
 
-  Object.values(agents).map((agent) => {
+  // TODO remove any after add format to AgentFunctionInfo
+  Object.values(agents).map((agent: any) => {
     if (agent.category) {
-      agent.category.forEach((category) => {
+      agent.category.forEach((category: any) => {
         const name = agent.name.replace(/Agent$/, "");
         const nodeType = [category, name].join("/");
         lite2inputs[nodeType] = jsonSchemaToI2IOType(agent.inputs);
-        lite2output[nodeType] = jsonSchemaToI2IOType(agent.output);
+        lite2output[nodeType] = agent.format ? format2output2(agent.format) : jsonSchemaToI2IOType(agent.output);
         lite2agent[nodeType] = agent;
         LiteGraph.registerNodeType(
           nodeType,
@@ -103,7 +117,7 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
             name: name,
             category: category,
             inputs: inputs2inputs(agent.inputs),
-            outputs: outputs2outputs(agent.output),
+            outputs: agent.format ? format2output(agent.format) : outputs2outputs(agent.output),
           }),
         );
       });
