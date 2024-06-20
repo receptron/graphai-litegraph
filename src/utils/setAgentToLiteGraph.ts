@@ -6,6 +6,7 @@ type AgentData = {
   category: string;
   inputs?: string[][];
   outputs?: string[][];
+  params?: any;
 };
 
 LiteGraph.registered_node_types = {};
@@ -26,9 +27,20 @@ const createAgentNode = (agentData: AgentData) => {
           this.addOutput(output[0], output[1]);
         });
       }
-      this.addWidget("text", "hoge", "11");
-      this.addWidget("text", "Text", "multiline", function () {}, { multiline: true });
-      this.addWidget("text", "system", "11");
+      if (agentData.params && agentData.params.properties) {
+        Object.keys(agentData.params.properties).forEach((key) => {
+          const data = agentData.params.properties[key];
+          if (data.type === "string") {
+            this.addWidget("text", key, "");
+          } else if (data.type === "number") {
+            this.addWidget("number", key, "");
+          } else {
+            // this.addWidget("boolean", key, "");
+            console.log(key, data);
+          }
+        });
+        // this.addWidget("text", "Text", "multiline", function () {}, { multiline: true });
+      }
     }
   }
 
@@ -118,6 +130,7 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
             category: category,
             inputs: inputs2inputs(agent.inputs),
             outputs: agent.format ? format2output(agent.format) : outputs2outputs(agent.output),
+            params: agent.params,
           }),
         );
       });
