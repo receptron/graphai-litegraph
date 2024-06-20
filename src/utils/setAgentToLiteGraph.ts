@@ -41,7 +41,7 @@ const jsonSchemaToIO = (inputs: any, typeName: string) => {
   if (!inputs) {
     return [[typeName, ["string", "number", "object"]]];
   }
-  if (inputs.type === "object"  && inputs.properties) {
+  if (inputs.type === "object" && inputs.properties) {
     return Object.keys(inputs.properties).map((property) => {
       return [property, inputs.properties[property].type];
     });
@@ -78,7 +78,7 @@ const jsonSchemaToI2IOType = (inputs: any) => {
 const format2output2 = (format: any) => {
   return Object.keys(format).map((property) => {
     const data = format[property];
-    return data.key
+    return data.key;
   });
 };
 
