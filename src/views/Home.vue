@@ -28,7 +28,7 @@ export default defineComponent({
     let lite2agent = {};
     let lite2inputs = {};
     let lite2output = {};
-    
+
     const graph = new LGraph();
 
     onMounted(() => {
@@ -36,7 +36,7 @@ export default defineComponent({
       lite2agent = ret.lite2agent;
       lite2inputs = ret.lite2inputs;
       lite2output = ret.lite2output;
-      
+
       new LGraphCanvas(canvasRef.value, graph);
 
       const node_const = LiteGraph.createNode("data/copy");

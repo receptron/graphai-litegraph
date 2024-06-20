@@ -35,10 +35,9 @@ const createAgentNode = (agentData: AgentData) => {
   Object.defineProperty(DynamicSubclass, "name", { value: agentData.name });
 
   return DynamicSubclass;
-}
+};
 
 const jsonSchemaToIO = (inputs: any, typeName: string) => {
-  
   if (!inputs) {
     return [[typeName, ["string", "number", "object"]]];
   }
@@ -89,22 +88,17 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
     {
       name: "number",
       category: "static",
-      outputs: [
-        ["Output", "number"],
-      ],
+      outputs: [["Output", "number"]],
     },
     {
       name: "string",
       category: "static",
-      outputs: [
-        ["Output", "string"],
-      ],
+      outputs: [["Output", "string"]],
     },
   ].map((agent: AgentData) => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
   });
 
-  
   const lite2agent: Record<string, AgentFunctionInfo> = {};
   const lite2inputs: Record<string, string[]> = {};
   const lite2output: Record<string, string[]> = {};
@@ -114,8 +108,8 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
       agent.category.forEach((category) => {
         const name = agent.name.replace(/Agent$/, "");
         const nodeType = [category, name].join("/");
-        lite2inputs[nodeType] = jsonSchemaToI2IOType(agent.inputs)
-        lite2output[nodeType] = jsonSchemaToI2IOType(agent.output)
+        lite2inputs[nodeType] = jsonSchemaToI2IOType(agent.inputs);
+        lite2output[nodeType] = jsonSchemaToI2IOType(agent.output);
         lite2agent[nodeType] = agent;
         LiteGraph.registerNodeType(
           nodeType,
