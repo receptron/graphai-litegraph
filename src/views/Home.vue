@@ -17,6 +17,8 @@ import "litegraph.js/css/litegraph.css";
 import { liteGraph2GraphData } from "../utils/toGraphAi";
 import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
+import * as vanillaAgents from "@graphai/vanilla";
+
 export default defineComponent({
   name: "HomePage",
   components: {},
@@ -30,7 +32,7 @@ export default defineComponent({
     const graph = new LGraph();
 
     onMounted(() => {
-      const ret = setAgentToLiteGraph();
+      const ret = setAgentToLiteGraph(vanillaAgents);
       lite2agent = ret.lite2agent;
       lite2inputs = ret.lite2inputs;
       lite2output = ret.lite2output;

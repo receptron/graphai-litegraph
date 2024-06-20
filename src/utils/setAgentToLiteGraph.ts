@@ -1,5 +1,5 @@
 import { LGraphNode, LiteGraph } from "litegraph.js";
-import * as vanillaAgents from "@graphai/vanilla";
+import { AgentFunctionInfoDictionary, AgentFunctionInfo } from "graphai";
 
 type AgentData = {
   name: string;
@@ -70,7 +70,7 @@ const jsonSchemaToI2IOType = (inputs: any) => {
   return [];
 };
 
-const setAgentToLiteGraph = () => {
+const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
   [
     {
       name: "OpenAI",
@@ -86,16 +86,30 @@ const setAgentToLiteGraph = () => {
         [".choices.$0.message.content", "string"],
       ],
     },
+    {
+      name: "number",
+      category: "static",
+      outputs: [
+        ["Output", "number"],
+      ],
+    },
+    {
+      name: "string",
+      category: "static",
+      outputs: [
+        ["Output", "string"],
+      ],
+    },
   ].map((agent: AgentData) => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));
   });
 
   
-  const lite2agent: Record<string, any> = {};
-  const lite2inputs: Record<string, any> = {};
-  const lite2output: Record<string, any> = {};
+  const lite2agent: Record<string, AgentFunctionInfo> = {};
+  const lite2inputs: Record<string, string[]> = {};
+  const lite2output: Record<string, string[]> = {};
 
-  Object.values(vanillaAgents).map((agent) => {
+  Object.values(agents).map((agent) => {
     if (agent.category) {
       agent.category.forEach((category) => {
         const name = agent.name.replace(/Agent$/, "");
