@@ -107,27 +107,29 @@ const format2output2 = (format: any) => {
 
 const params2widget = (params: any) => {
   if (params && params.properties) {
-    return Object.keys(params.properties).map((key) => {
-      const data = params.properties[key];
-      if (data.type === "string") {
-        return {
-          type: "string",
-          key,
-        };
-      }
-      if (data.type === "boolean") {
-        return {
-          type: "boolean",
-          key,
-        };
-      }
-      if (data.type === "number") {
-        return {
-          type: "number",
-          key,
+    return Object.keys(params.properties)
+      .map((key) => {
+        const data = params.properties[key];
+        if (data.type === "string") {
+          return {
+            type: "string",
+            key,
+          };
         }
-      }
-    }).filter(a => a) as any[];
+        if (data.type === "boolean") {
+          return {
+            type: "boolean",
+            key,
+          };
+        }
+        if (data.type === "number") {
+          return {
+            type: "number",
+            key,
+          };
+        }
+      })
+      .filter((a) => a) as any[];
   }
   return [];
 };
@@ -151,8 +153,8 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
   const lite2agent: Record<string, AgentFunctionInfo> = {};
   const lite2inputs: Record<string, string[]> = {};
   const lite2output: Record<string, string[]> = {};
-  const lite2params: Record<string, {type: string, key: string}[]> = {};
-  
+  const lite2params: Record<string, { type: string; key: string }[]> = {};
+
   // TODO remove any after add format to AgentFunctionInfo
   Object.values(agents).map((agent: any) => {
     if (agent.category) {

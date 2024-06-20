@@ -4,10 +4,10 @@ import { serializedLGraph, LGraphNode } from "litegraph.js";
 const liteGraph2GraphData = (
   liteGraph: serializedLGraph,
   ret: {
-    lite2agent: Record<string, AgentFunctionInfo>,
-    lite2inputs: Record<string, string[]>,
-    lite2output: Record<string, string[]>,
-    lite2params: Record<string, any[]>,
+    lite2agent: Record<string, AgentFunctionInfo>;
+    lite2inputs: Record<string, string[]>;
+    lite2output: Record<string, string[]>;
+    lite2params: Record<string, any[]>;
   },
 ) => {
   const { lite2agent, lite2inputs, lite2output, lite2params } = ret;
@@ -74,7 +74,7 @@ const liteGraph2GraphData = (
 
     if ((node.type || "").startsWith("static/")) {
       tmp[`node_${node.id}`] = {
-        value:  node.widgets_values ? node.widgets_values[0] ?? "" : "",
+        value: node.widgets_values ? node.widgets_values[0] ?? "" : "",
       };
     } else {
       const agent = lite2agent[node.type || ""];
