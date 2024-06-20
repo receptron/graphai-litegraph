@@ -83,9 +83,9 @@ export default defineComponent({
 
     const download = () => {
       const data = graph.serialize();
-      const graphData = liteGraph2GraphData(data, lite2graph);
+      const graphData = liteGraph2GraphData(data, lite2graph as any);
       console.log(graphData);
-      console.log(JSON.stringify(graphData, 2, null));
+      console.log(JSON.stringify(graphData, null, 2));
     };
 
     return {
