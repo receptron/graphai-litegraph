@@ -1,4 +1,4 @@
-import { ComputedNodeData, AgentFunctionInfo } from "graphai";
+import { NodeData, AgentFunctionInfo } from "graphai";
 import { serializedLGraph, LGraphNode } from "litegraph.js";
 
 const liteGraph2GraphData = (liteGraph: serializedLGraph, lite2agent: Record<string, AgentFunctionInfo>, lite2inputs: Record<string, string[]>, lite2output: Record<string, string[]>) => {
@@ -36,13 +36,20 @@ const liteGraph2GraphData = (liteGraph: serializedLGraph, lite2agent: Record<str
     return tmp;
   }, {});
   
-  const nodes = liteGraph.nodes.reduce((tmp: Record<string, ComputedNodeData>, node: ReturnType<LGraphNode["serialize"]>) => {
+  const nodes = liteGraph.nodes.reduce((tmp: Record<string, NodeData>, node: ReturnType<LGraphNode["serialize"]>) => {
     // [link index, out node, out position, in node, in position]
     const inputs = linkObj[node.id];
-    const agent = lite2agent[node.type||''];
-    tmp[`node_${node.id}`] = {
-      agent: agent ? agent.name : node.type || '',
-      inputs: inputs ? inputs : undefined,
+
+    if ((node.type||'').startsWith("static/")) {
+      tmp[`node_${node.id}`] = {
+        value: "123",
+      }
+    } else {
+      const agent = lite2agent[node.type||''];
+      tmp[`node_${node.id}`] = {
+        agent: agent ? agent.name : node.type || '',
+        inputs: inputs ? inputs : undefined,
+      }
     }
     return tmp;
   }, {});
