@@ -2,7 +2,7 @@
 
 ## 📋 Requirements
 
-- Node.js version 19 or later.
+- Node.js version 18 or later.
 
 ## 📖 Instruction
 
