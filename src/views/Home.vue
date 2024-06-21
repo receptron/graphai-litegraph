@@ -35,7 +35,6 @@ export default defineComponent({
     let graph: LGraph | undefined = undefined;
 
     onMounted(() => {
-
       const agents = agentlist.agents.reduce((tmp: any, agent) => {
         tmp[agent.agentId] = agent;
         return tmp;
@@ -63,21 +62,23 @@ export default defineComponent({
     const localStorageKey = "graphai-litegraph-data";
 
     const save = () => {
-      const data = graph.serialize();
-      // console.log(JSON.stringify(data));
-      localStorage.setItem(localStorageKey, JSON.stringify(data));
-      
+      if (graph) {
+        const data = graph.serialize();
+        localStorage.setItem(localStorageKey, JSON.stringify(data));
+      }
     };
     const load = () => {
       const graphString = localStorage.getItem(localStorageKey);
-      if (graphString) {
+      if (graphString && graph) {
         const data = JSON.parse(graphString);
         graph.configure(data);
       }
       return !!graphString;
     };
     const reset = () => {
-      graph.configure(defaultData); 
+      if (graph) {
+        graph.configure(defaultData);
+      }
     };
     return {
       download,
@@ -85,7 +86,6 @@ export default defineComponent({
       save,
       load,
       reset,
-       
     };
   },
 });
