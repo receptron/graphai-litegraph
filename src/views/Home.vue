@@ -8,6 +8,7 @@
     <button @click="load" class="border-2 border-blue-200">Load</button>
     <button @click="reset" class="border-2 border-blue-200">Reset</button>
     <button @click="download" class="border-2 border-blue-200">Download</button>
+    <button @click="runGraph" class="border-2 border-blue-200">Run</button>
   </div>
 </template>
 
@@ -20,7 +21,9 @@ import "litegraph.js/css/litegraph.css";
 import { liteGraph2GraphData } from "../utils/toGraphAi";
 import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
-// import * as vanillaAgents from "@graphai/vanilla";
+import { GraphAI } from "graphai";
+
+import * as vanillaAgents from "@graphai/vanilla";
 import { agentlist } from "../utils/agentlist";
 import { defaultData } from "../utils/defaultData";
 
@@ -80,12 +83,20 @@ export default defineComponent({
         liteGraph.configure(defaultData);
       }
     };
+    const runGraph = async () => {
+      const data = liteGraph.serialize();
+      const graphData = liteGraph2GraphData(data, lite2graph as any);
+      const graphAI = new GraphAI(graphData,  vanillaAgents);
+      const res = await graphAI.run(true);
+      console.log(res);
+    };
     return {
       download,
       canvasRef,
       save,
       load,
       reset,
+      runGraph,
     };
   },
 });
