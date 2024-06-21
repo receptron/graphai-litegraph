@@ -32,7 +32,7 @@ export default defineComponent({
 
     let lite2graph = {};
 
-    let graph: LGraph | undefined = undefined;
+    let liteGraph: LGraph | undefined = undefined;
 
     onMounted(() => {
       const agents = agentlist.agents.reduce((tmp: any, agent) => {
@@ -40,19 +40,19 @@ export default defineComponent({
         return tmp;
       }, {});
       lite2graph = setAgentToLiteGraph(agents);
-      graph = new LiteGraph.LGraph();
+      liteGraph = new LiteGraph.LGraph();
 
       if (!load()) {
-        graph.configure(defaultData);
+        liteGraph.configure(defaultData);
       }
-      new LGraphCanvas(canvasRef.value, graph);
+      new LGraphCanvas(canvasRef.value, liteGraph);
 
-      graph.start();
+      liteGraph.start();
     });
 
     const download = () => {
-      if (graph) {
-        const data = graph.serialize();
+      if (liteGraph) {
+        const data = liteGraph.serialize();
         console.log(JSON.stringify(data));
         const graphData = liteGraph2GraphData(data, lite2graph as any);
         console.log(graphData);
@@ -62,22 +62,22 @@ export default defineComponent({
     const localStorageKey = "graphai-litegraph-data";
 
     const save = () => {
-      if (graph) {
-        const data = graph.serialize();
+      if (liteGraph) {
+        const data = liteGraph.serialize();
         localStorage.setItem(localStorageKey, JSON.stringify(data));
       }
     };
     const load = () => {
       const graphString = localStorage.getItem(localStorageKey);
-      if (graphString && graph) {
+      if (graphString && liteGraph) {
         const data = JSON.parse(graphString);
-        graph.configure(data);
+        liteGraph.configure(data);
       }
       return !!graphString;
     };
     const reset = () => {
-      if (graph) {
-        graph.configure(defaultData);
+      if (liteGraph) {
+        liteGraph.configure(defaultData);
       }
     };
     return {
