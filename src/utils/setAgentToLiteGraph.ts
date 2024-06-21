@@ -38,11 +38,9 @@ const createAgentNode = (agentData: AgentData) => {
           } else if (data.type === "boolean") {
             this.addWidget("toggle", key, false);
           } else {
-            // this.addWidget("boolean", key, "");
             console.log(key, data);
           }
         });
-        // this.addWidget("text", "Text", "multiline", function () {}, { multiline: true });
       }
       if (agentData.category === "static") {
         if (agentData.name === "string") {

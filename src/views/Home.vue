@@ -4,7 +4,10 @@
       <!-- Use Tailwind CSS h-40 (=10rem=160px) instead of .logo. -->
       <canvas id="mycanvas" width="1024" height="720" style="border: 1px solid" ref="canvasRef"></canvas>
     </div>
-    <Button @click="download" class="border-2 border-blue-200">Download</Button>
+    <button @click="save" class="border-2 border-blue-200">Save</button>
+    <button @click="load" class="border-2 border-blue-200">Load</button>
+    <button @click="reset" class="border-2 border-blue-200">Reset</button>
+    <button @click="download" class="border-2 border-blue-200">Download</button>
   </div>
 </template>
 
@@ -19,6 +22,7 @@ import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
 // import * as vanillaAgents from "@graphai/vanilla";
 import { agentlist } from "../utils/agentlist";
+import { defaultData } from "../utils/defaultData";
 
 export default defineComponent({
   name: "HomePage",
@@ -28,69 +32,60 @@ export default defineComponent({
 
     let lite2graph = {};
 
-    const graph = new LGraph();
+    let graph: LGraph | undefined = undefined;
 
     onMounted(() => {
+
       const agents = agentlist.agents.reduce((tmp: any, agent) => {
         tmp[agent.agentId] = agent;
         return tmp;
       }, {});
       lite2graph = setAgentToLiteGraph(agents);
+      graph = new LiteGraph.LGraph();
 
+      if (!load()) {
+        graph.configure(defaultData);
+      }
       new LGraphCanvas(canvasRef.value, graph);
-
-      const node_const = LiteGraph.createNode("data/copy");
-      node_const.pos = [200, 100];
-      graph.add(node_const);
-
-      const node_watch = LiteGraph.createNode("data/total");
-      node_watch.pos = [700, 100];
-      graph.add(node_watch);
-      node_const.connect(0, node_watch, 0);
-
-      const openai_node = LiteGraph.createNode("llm/openAI");
-      graph.add(openai_node);
-      openai_node.pos = [700, 200];
-
-      const string_node = LiteGraph.createNode("static/string");
-      graph.add(string_node);
-      string_node.pos = [200, 200];
-      string_node.connect(0, openai_node, 10);
-
-      const string_node2 = LiteGraph.createNode("static/string");
-      graph.add(string_node2);
-      string_node2.pos = [200, 300];
-      string_node2.connect(0, openai_node, 1);
-
-      const pop_node = LiteGraph.createNode("array/pop");
-      graph.add(pop_node);
-      pop_node.pos = [400, 400];
-
-      const shift_node = LiteGraph.createNode("array/shift");
-      graph.add(shift_node);
-      shift_node.pos = [200, 400];
-      shift_node.connect(1, pop_node, 0);
-
-      const push_node = LiteGraph.createNode("array/push");
-      graph.add(push_node);
-      push_node.pos = [600, 400];
-      pop_node.connect(1, push_node, 0);
-
-      // ing_node.connect(0, openai_node, 3);
 
       graph.start();
     });
 
     const download = () => {
-      const data = graph.serialize();
-      const graphData = liteGraph2GraphData(data, lite2graph as any);
-      console.log(graphData);
-      console.log(JSON.stringify(graphData, null, 2));
+      if (graph) {
+        const data = graph.serialize();
+        console.log(JSON.stringify(data));
+        const graphData = liteGraph2GraphData(data, lite2graph as any);
+        console.log(graphData);
+        console.log(JSON.stringify(graphData, undefined, 2));
+      }
     };
+    const localStorageKey = "graphai-litegraph-data";
 
+    const save = () => {
+      const data = graph.serialize();
+      // console.log(JSON.stringify(data));
+      localStorage.setItem(localStorageKey, JSON.stringify(data));
+      
+    };
+    const load = () => {
+      const graphString = localStorage.getItem(localStorageKey);
+      if (graphString) {
+        const data = JSON.parse(graphString);
+        graph.configure(data);
+      }
+      return !!graphString;
+    };
+    const reset = () => {
+      graph.configure(defaultData); 
+    };
     return {
       download,
       canvasRef,
+      save,
+      load,
+      reset,
+       
     };
   },
 });
