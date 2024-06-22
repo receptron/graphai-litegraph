@@ -49,6 +49,9 @@ const createAgentNode = (agentData: AgentData) => {
         if (agentData.name === "number") {
           this.addWidget("number", "value", "");
         }
+        if (agentData.name === "boolean") {
+          this.addWidget("toggle", "value", "");
+        }
       }
     }
   }
@@ -143,6 +146,11 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
       name: "string",
       category: "static",
       outputs: [["Output", "string"]],
+    },
+    {
+      name: "boolean",
+      category: "static",
+      outputs: [["Output", "boolean"]],
     },
   ].map((agent: AgentData) => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));

@@ -20,6 +20,7 @@
     <div v-show="tabIndex === 'Graph'">
       <button @click="runGraph" class="border-2 border-blue-200">Run</button>
       <div>
+        <textarea :value="graphData"></textarea>
         {{ streamingData }}
         {{ graphResult }}
       </div>
@@ -44,6 +45,8 @@ import * as dataAgents from "@graphai/data_agents";
 // import { agentlist } from "../utils/agentlist";
 import { defaultData } from "../utils/defaultData";
 import { useGraph } from "../utils/graph";
+
+import YAML from "yaml";
 
 export default defineComponent({
   name: "HomePage",
@@ -101,12 +104,19 @@ export default defineComponent({
     };
     const runGraph = async () => {
       const data = liteGraph.serialize();
-      const graphData = liteGraph2GraphData(data, lite2graph as any);
-      const graphAI = getGraph(graphData);
+      const runGraphData = liteGraph2GraphData(data, lite2graph as any);
+      const graphAI = getGraph(runGraphData);
       const res = await graphAI.run(true);
       graphResult.value = res;
       console.log(res);
     };
+
+    const graphData = ref("");
+    watch(tabIndex, () => {
+      const data = liteGraph.serialize();
+      graphData.value = YAML.stringify(liteGraph2GraphData(data, lite2graph as any));
+    });
+
     return {
       // tab
       tabIndex,
@@ -120,6 +130,8 @@ export default defineComponent({
 
       streamingData,
       graphResult,
+
+      graphData,
     };
   },
 });
