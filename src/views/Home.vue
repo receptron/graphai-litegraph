@@ -1,19 +1,28 @@
 <template>
   <div class="home">
-    <div class="flex items-center justify-center space-x-8">
-      <!-- Use Tailwind CSS h-40 (=10rem=160px) instead of .logo. -->
-      <canvas id="mycanvas" width="1024" height="720" style="border: 1px solid" ref="canvasRef"></canvas>
+    <div class="flex items-center justify-center">
+      <div class="p-2 my-2 border-2" :class="tabIndex === 'GUI' ? 'bg-blue-400' : 'bg-blue-200'" @click="tabIndex = 'GUI'">GUI</div>
+      <div class="p-2 my-2 border-2" :class="tabIndex === 'Graph' ? 'bg-blue-400' : 'bg-blue-200'" @click="tabIndex = 'Graph'">Graph</div>
     </div>
-    <div>
-      <button @click="save" class="border-2 border-blue-200">Save</button>
-      <button @click="load" class="border-2 border-blue-200">Load</button>
-      <button @click="reset" class="border-2 border-blue-200">Reset</button>
-      <button @click="download" class="border-2 border-blue-200">Download</button>
+    <!-- GUI -->
+    <div v-show="tabIndex === 'GUI'">
+      <div class="flex items-center justify-center space-x-8 w-full">
+        <!-- Use Tailwind CSS h-40 (=10rem=160px) instead of .logo. -->
+        <canvas id="mycanvas" width="1024" height="720" style="border: 1px solid" ref="canvasRef"></canvas>
+      </div>
+      <div>
+        <button @click="save" class="border-2 border-blue-200">Save</button>
+        <button @click="load" class="border-2 border-blue-200">Load</button>
+        <button @click="reset" class="border-2 border-blue-200">Reset</button>
+        <button @click="download" class="border-2 border-blue-200">Download</button>
+      </div>
+    </div>
+    <div v-show="tabIndex === 'Graph'">
       <button @click="runGraph" class="border-2 border-blue-200">Run</button>
-    </div>
-    <div>
-      {{ streamingData }}
-      {{ graphResult }}
+      <div>
+        {{ streamingData }}
+        {{ graphResult }}
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +40,7 @@ import { LiteGraph, setAgentToLiteGraph } from "../utils/setAgentToLiteGraph";
 
 import * as vanillaAgents from "@graphai/vanilla";
 import * as sleeperAgents from "@graphai/sleeper_agents";
-import * as dataAgents from "@graphai/data_agents"
+import * as dataAgents from "@graphai/data_agents";
 // import { agentlist } from "../utils/agentlist";
 import { defaultData } from "../utils/defaultData";
 import { useGraph } from "../utils/graph";
@@ -40,17 +49,14 @@ export default defineComponent({
   name: "HomePage",
   components: {},
   setup() {
+    const tabIndex = ref("GUI");
+
     const canvasRef = ref();
 
     let lite2graph = {};
     let liteGraph: LGraph | undefined = undefined;
-    const webAgents = { ...vanillaAgents,  ...sleeperAgents, ...dataAgents };
-    const {
-      getGraph,
-      streamingData,
-      graphResult,
-      serverAgentsInfoDictionary,
-    } = useGraph(["http://localhost:8085/agents"], webAgents);
+    const webAgents = { ...vanillaAgents, ...sleeperAgents, ...dataAgents };
+    const { getGraph, streamingData, graphResult, serverAgentsInfoDictionary } = useGraph(["http://localhost:8085/agents"], webAgents);
 
     watch([canvasRef, serverAgentsInfoDictionary], (v) => {
       if (v[0] && v[1] && Object.keys(v[1]).length > 0) {
@@ -60,7 +66,7 @@ export default defineComponent({
         }, {});
         lite2graph = setAgentToLiteGraph(agents);
         liteGraph = new LiteGraph.LGraph();
-        
+
         new LGraphCanvas(canvasRef.value, liteGraph);
         liteGraph.start();
         if (!load()) {
@@ -68,7 +74,7 @@ export default defineComponent({
         }
       }
     });
-    
+
     const download = () => {
       const data = liteGraph.serialize();
       console.log(JSON.stringify(data));
@@ -102,6 +108,9 @@ export default defineComponent({
       console.log(res);
     };
     return {
+      // tab
+      tabIndex,
+
       download,
       canvasRef,
       save,
