@@ -67,11 +67,15 @@ export default defineComponent({
 
     watch([canvasRef, serverAgentsInfoDictionary], (v) => {
       if (v[0] && v[1] && Object.keys(v[1]).length > 0) {
-        const agents = [...Object.values(serverAgentsInfoDictionary.value), ...Object.values(webAgents)].reduce((tmp: any, agent) => {
-          tmp[agent.agentId ?? agent.name] = agent;
+        const agents = Object.values(serverAgentsInfoDictionary.value).reduce((tmp: any, agent) => {
+          tmp[agent.agentId] = agent;
           return tmp;
         }, {});
-        lite2graph = setAgentToLiteGraph(agents);
+        const agents2 = Object.values(webAgents).reduce((tmp: any, agent) => {
+          tmp[agent.name] = agent;
+          return tmp;
+        }, agents);
+        lite2graph = setAgentToLiteGraph(agents2);
         liteGraph = new LiteGraph.LGraph();
 
         new LGraphCanvas(canvasRef.value, liteGraph);
@@ -83,42 +87,52 @@ export default defineComponent({
     });
 
     const download = () => {
-      const data = liteGraph.serialize();
-      console.log(JSON.stringify(data));
-      const graphData = liteGraph2GraphData(data, lite2graph as any);
-      console.log(graphData);
-      console.log(JSON.stringify(graphData, undefined, 2));
+      if (liteGraph) {
+        const data = liteGraph.serialize();
+        console.log(JSON.stringify(data));
+        const graphData = liteGraph2GraphData(data, lite2graph as any);
+        console.log(graphData);
+        console.log(JSON.stringify(graphData, undefined, 2));
+      }
     };
     const localStorageKey = "graphai-litegraph-data";
 
     const save = () => {
-      const data = liteGraph.serialize();
-      localStorage.setItem(localStorageKey, JSON.stringify(data));
+      if (liteGraph) {
+        const data = liteGraph.serialize();
+        localStorage.setItem(localStorageKey, JSON.stringify(data));
+      }
     };
     const load = () => {
       const graphString = localStorage.getItem(localStorageKey);
-      if (graphString) {
+      if (graphString && liteGraph) {
         const data = JSON.parse(graphString);
         liteGraph.configure(data);
       }
       return !!graphString;
     };
     const reset = () => {
-      liteGraph.configure(defaultData);
+      if (liteGraph) {
+        liteGraph.configure(defaultData);
+      }
     };
     const runGraph = async () => {
-      const data = liteGraph.serialize();
-      const runGraphData = liteGraph2GraphData(data, lite2graph as any);
-      const graphAI = getGraph(runGraphData);
-      const res = await graphAI.run(true);
-      graphResult.value = res;
-      console.log(res);
+      if (liteGraph) {
+        const data = liteGraph.serialize();
+        const runGraphData = liteGraph2GraphData(data, lite2graph as any);
+        const graphAI = getGraph(runGraphData);
+        const res = await graphAI.run(true);
+        graphResult.value = res;
+        console.log(res);
+      }
     };
 
     const graphData = ref("");
     watch(tabIndex, () => {
-      const data = liteGraph.serialize();
-      graphData.value = YAML.stringify(liteGraph2GraphData(data, lite2graph as any));
+      if (liteGraph) {
+        const data = liteGraph.serialize();
+        graphData.value = YAML.stringify(liteGraph2GraphData(data, lite2graph as any));
+      }
     });
 
     return {
