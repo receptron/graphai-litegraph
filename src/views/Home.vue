@@ -19,10 +19,14 @@
     </div>
     <div v-show="tabIndex === 'Graph'">
       <button @click="runGraph" class="border-2 border-blue-200">Run</button>
-      <div>
-        <textarea :value="graphData"></textarea>
-        {{ streamingData }}
-        {{ graphResult }}
+      <div class="flex">
+        <div>
+          <textarea :value="graphData"></textarea>
+        </div>
+        <div>
+          {{ streamingData }}
+          {{ graphResult }}
+        </div>
       </div>
     </div>
   </div>
