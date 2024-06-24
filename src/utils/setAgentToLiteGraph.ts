@@ -42,15 +42,30 @@ const createAgentNode = (agentData: AgentData) => {
           }
         });
       }
+      //for static node
       if (agentData.category === "static") {
         if (agentData.name === "string") {
-          this.addWidget("text", "value", "");
+          this.addWidget("text", "value", "", () =>{}, {multiline: true});
         }
         if (agentData.name === "number") {
           this.addWidget("number", "value", "");
         }
         if (agentData.name === "boolean") {
           this.addWidget("toggle", "value", "");
+        }
+        if (agentData.name === "object") {
+          this.addWidget("text", "value", "", () =>{}, {multiline: true});
+        }
+      }
+    }
+    onSerialize(a: any) {
+      if (this.type === "static/object") {
+        try {
+          const data = JSON.parse(a.widgets_values[0]);
+          console.log(data);
+          this.setOutputData(0, data);
+        } catch (e) {
+          this.setOutputData(0, {});
         }
       }
     }
@@ -151,6 +166,11 @@ const setAgentToLiteGraph = (agents: AgentFunctionInfoDictionary) => {
       name: "boolean",
       category: "static",
       outputs: [["Output", "boolean"]],
+    },
+    {
+      name: "object",
+      category: "static",
+      outputs: [["Output", "object"]],
     },
   ].map((agent: AgentData) => {
     LiteGraph.registerNodeType([agent.category, agent.name].join("/"), createAgentNode(agent));

@@ -75,7 +75,11 @@ const liteGraph2GraphData = (
   const nodes = liteGraph.nodes.reduce((tmp: Record<string, NodeData>, node: ReturnType<LGraphNode["serialize"]>) => {
     // [link index, out node, out position, in node, in position]
     const inputs = linkObj[node.id];
-    if ((node.type || "").startsWith("static/")) {
+    if ((node.type || "") === "static/object") {
+      tmp[`node_${node.id}`] = {
+        value: node.widgets_values ? JSON.parse(node.widgets_values[0]) : {},
+      };
+    } else if ((node.type || "").startsWith("static/")) {
       tmp[`node_${node.id}`] = {
         value: node.widgets_values ? node.widgets_values[0] ?? "" : "",
       };

@@ -41,15 +41,19 @@ const useServerAgent = (agentBaseUrls: string[]) => {
   const serverAgentsInfoDictionary = ref<Record<string, ExpressAgentInfo>>({});
 
   agentBaseUrls.forEach(async (url) => {
-    const res = await getServerAgents(url);
-    serverAgentsInfoDictionary.value = res.agents.reduce((tmp: Record<string, ExpressAgentInfo>, a: ExpressAgentInfo) => {
-      if (tmp[a.agentId]) {
-        console.log("duplicate agent: " + a.agentId);
-      }
-      serverAgentUrlDictionary[a.agentId] = url + "/" + a.agentId;
-      tmp[a.agentId] = a;
-      return tmp;
-    }, {});
+    try {
+      const res = await getServerAgents(url);
+      serverAgentsInfoDictionary.value = res.agents.reduce((tmp: Record<string, ExpressAgentInfo>, a: ExpressAgentInfo) => {
+        if (tmp[a.agentId]) {
+          console.log("duplicate agent: " + a.agentId);
+        }
+        serverAgentUrlDictionary[a.agentId] = url + "/" + a.agentId;
+        tmp[a.agentId] = a;
+        return tmp;
+      }, {});
+    } catch (e) {
+      alert("server(" + url + ") may be down. check server or use https://github.com/receptron/graphai-agent-server");
+    }
   });
 
   const serverAgentIds = computed(() => {
