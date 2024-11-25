@@ -4,6 +4,8 @@
 
 - Node.js version 20 or later.
 
+![screen](docs/screen.png)
+
 # Usage
 
 ## 📖 Instruction
