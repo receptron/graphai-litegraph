@@ -2,17 +2,22 @@
 
 ## 📋 Requirements
 
-- Node.js version 18 or later.
+- Node.js version 20 or later.
+
+# Usage
 
 ## 📖 Instruction
 
-1. Git clone this repository
-2. Run "yarn install" once to get necessary node modules.
+```
+yarn install
+```
 
-### `yarn run serve`
+### run server
 
-Runs the app in the development mode.<br>
-Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
+see https://github.com/receptron/graphai-agent-server
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### run vue
+
+```
+yarn run serve
+```
