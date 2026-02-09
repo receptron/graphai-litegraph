@@ -6,6 +6,7 @@ declare module '*.vue' {
 }
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
+    $t: (key: string, ...args: unknown[]) => string;
     localizedUrl: (path: string) => string;
   }
 }
