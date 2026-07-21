@@ -40,9 +40,9 @@
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "tailwindcss": "^3.3.5",
-    "typescript": "5.3.2",
+    "typescript": "6.0.3",
     "vite": "^6.4.3",
     "vite-plugin-checker": "^0.6.2",
-    "vue-tsc": "^1.8.27"
+    "vue-tsc": "^3.3.7"
   }
 }
