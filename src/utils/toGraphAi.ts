@@ -81,7 +81,7 @@ const liteGraph2GraphData = (
       };
     } else if ((node.type || "").startsWith("static/")) {
       tmp[`node_${node.id}`] = {
-        value: node.widgets_values ? node.widgets_values[0] ?? "" : "",
+        value: node.widgets_values ? (node.widgets_values[0] ?? "") : "",
       };
     } else {
       const agent = lite2agent[node.type || ""];

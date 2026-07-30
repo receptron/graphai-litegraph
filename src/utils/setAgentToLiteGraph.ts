@@ -45,7 +45,7 @@ const createAgentNode = (agentData: AgentData) => {
       //for static node
       if (agentData.category === "static") {
         if (agentData.name === "string") {
-          this.addWidget("text", "value", "", () =>{}, {multiline: true});
+          this.addWidget("text", "value", "", () => {}, { multiline: true });
         }
         if (agentData.name === "number") {
           this.addWidget("number", "value", "");
@@ -54,7 +54,7 @@ const createAgentNode = (agentData: AgentData) => {
           this.addWidget("toggle", "value", "");
         }
         if (agentData.name === "object") {
-          this.addWidget("text", "value", "", () =>{}, {multiline: true});
+          this.addWidget("text", "value", "", () => {}, { multiline: true });
         }
       }
     }
