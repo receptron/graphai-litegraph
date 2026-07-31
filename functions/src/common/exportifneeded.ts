@@ -10,7 +10,6 @@ export default function exportIfNeeded(
   exports: any
 ): void {
   if (isFunctionCalled(functionName)) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     exports[functionName] = require(`../wrappers/${fileName}`).default;
   }
 }
