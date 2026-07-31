@@ -1,0 +1,25 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // App entry is auto-detected: knip's vite plugin reads vite.config.js, and index.html
+  // points at src/main.ts. Listing it explicitly would only trigger a "redundant entry" hint.
+  // project is scoped to src/ so the separate Firebase functions/ sub-project (its own
+  // package.json, own tsconfig) is never analyzed by this app-level scan.
+  "project": ["src/**/*.{ts,vue}"],
+  "ignoreExportsUsedInFile": true,
+  "includeEntryExports": false,
+  "rules": {
+    // Warn mode: every rule is "warn" (reported, exit 0) or "off". Nothing gates CI here.
+    "files": "warn",
+    "dependencies": "warn",
+    "devDependencies": "warn",
+    "unlisted": "warn",
+    "exports": "warn",
+    "types": "warn",
+    "unresolved": "off",
+    "binaries": "off",
+    "nsExports": "off",
+    "nsTypes": "off",
+    "enumMembers": "off",
+    "duplicates": "off",
+  },
+}
