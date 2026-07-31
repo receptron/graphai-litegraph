@@ -14,7 +14,7 @@
     "@graphai/data_agents": "^1.0.0",
     "@graphai/sleeper_agents": "^0.2.0",
     "@graphai/vanilla": "^2.0.12",
-    "@vueuse/head": "^2.0.0",
+    "@unhead/vue": "^3.2.3",
     "core-js": "^3.49.0",
     "firebase": "^12.17.0",
     "graphai": "^2.0.18",
