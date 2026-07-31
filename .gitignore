@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# jscpd / knip scan output
+report/
+
 
 # local env files
 .env.local

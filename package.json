@@ -7,6 +7,7 @@
     "build": "vue-tsc && vite build",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint src",
+    "knip": "knip",
     "format": "prettier --write '{src/**/*,*}.{js,ts,vue,json}'"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
     "eslint-plugin-sonarjs": "^4.2.0",
     "eslint-plugin-vue": "^10.10.0",
     "globals": "^17.8.0",
+    "knip": "^6",
     "postcss": "^8.5.25",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.6.14",
