@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint src",
     "format": "prettier --write 'src/**/*.{js,ts}'",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -21,12 +21,12 @@
     "hono": "^3.11.9"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-import": "^2.29.1",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.8.0",
+    "globals": "^17.8.0",
     "prettier": "^3.2.5",
-    "typescript": "5.4.3"
+    "typescript": "5.4.3",
+    "typescript-eslint": "^8.65.0"
   },
   "private": true
 }
