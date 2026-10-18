@@ -1,7 +1,8 @@
 import { ref, computed } from "vue";
 import { AgentFunctionContext, GraphAI, AgentFunctionInfoDictionary } from "graphai";
 
-import { streamAgentFilterGenerator, httpAgentFilter } from "@graphai/agent_filters";
+import { streamAgentFilterGenerator } from "@graphai/stream_agent_filter";
+import { httpAgentFilter } from "@graphai/http_client_agent_filter";
 import { ExpressAgentInfo } from "@receptron/graphai_express_type";
 
 const getAgentFilter = <T>(

@@ -11,9 +11,10 @@
     "format": "prettier --write '{src/**/*,*}.{js,ts,vue,json}'"
   },
   "dependencies": {
-    "@graphai/agent_filters": "^2.0.1",
     "@graphai/data_agents": "^1.0.0",
+    "@graphai/http_client_agent_filter": "^2.0.1",
     "@graphai/sleeper_agents": "^0.2.0",
+    "@graphai/stream_agent_filter": "^2.0.3",
     "@graphai/vanilla": "^2.0.12",
     "@unhead/vue": "^3.4.3",
     "core-js": "^3.50.0",
