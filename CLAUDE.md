@@ -13,6 +13,7 @@ yarn serve      # Start Vite dev server
 yarn build      # Build for production (vue-tsc && vite build)
 yarn lint       # Run ESLint on src/
 yarn format     # Format with Prettier
+yarn test       # After yarn build: bundle check + headless render smoke test (Playwright)
 ```
 
 ## Architecture

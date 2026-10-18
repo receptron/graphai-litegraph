@@ -31,3 +31,5 @@ jobs:
     - run: yarn run typecheck
     - run: yarn run lint
     - run: yarn run build
+    - run: yarn playwright install --with-deps --only-shell chromium
+    - run: yarn run test

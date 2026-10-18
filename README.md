@@ -23,3 +23,13 @@ see https://github.com/receptron/graphai-agent-server
 ```
 yarn run serve
 ```
+
+### test
+
+Needs a build: checks `dist/` for Node-only modules and renders it in headless Chromium.
+
+```
+yarn playwright install chromium
+yarn run build
+yarn run test
+```
