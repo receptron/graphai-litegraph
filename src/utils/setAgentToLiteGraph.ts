@@ -86,7 +86,7 @@ const jsonSchemaToIO = (inputs: any, typeName: string) => {
     });
   }
   if (inputs.anyOf) {
-    return [[typeName, inputs.anyOf.map((a: { type: string }) => a.type)]];
+    return [[typeName, [inputs.anyOf].flat().map((a: { type: string }) => a.type)]];
   }
   return [[typeName, "string"]];
 };
