@@ -5,10 +5,11 @@
   "scripts": {
     "serve": "vite",
     "build": "vue-tsc && vite build",
-    "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint src",
+    "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p test",
+    "lint": "eslint src test",
     "knip": "knip",
-    "format": "prettier --write '{src/**/*,*}.{js,ts,vue,json}'"
+    "format": "prettier --write '{src/**/*,test/**/*,*}.{js,ts,vue,json}'",
+    "test": "node --test test/test_*.ts"
   },
   "dependencies": {
     "@graphai/data_agents": "^1.0.0",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@receptron/graphai_express_type": "^2.0.0",
+    "@types/node": "^24",
     "@typescript-eslint/eslint-plugin": "^8.71.2",
     "@typescript-eslint/parser": "^8.71.2",
     "@vitejs/plugin-vue": "^6.0.10",
@@ -41,6 +43,7 @@
     "eslint-plugin-vue": "^10.11.1",
     "globals": "^17.13.0",
     "knip": "^6.41.0",
+    "playwright": "^1.64.1",
     "postcss": "^8.5.30",
     "prettier": "^3.9.10",
     "tailwindcss": "^3.4.19",
