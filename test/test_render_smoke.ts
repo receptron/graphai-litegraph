@@ -57,23 +57,29 @@ const waitForEditorCanvas = async (page: Page): Promise<boolean> => {
   }
 };
 
+const assertAppRendersEditor = async (page: Page): Promise<void> => {
+  const pageProblems = collectPageProblems(page);
+  await stubExternalRequests(page);
+  await page.goto(`http://localhost:${previewPort}/`);
+  const editorInitialized = await waitForEditorCanvas(page);
+  const appRootChildCount = await page.locator("#app > *").count();
+
+  assert.deepStrictEqual(pageProblems, [], "the page reported errors");
+  assert.ok(appRootChildCount > 0, "#app is empty (white screen)");
+  assert.ok(editorInitialized, "the LiteGraph editor canvas was never initialized");
+};
+
 test("built app renders and initializes the LiteGraph editor without errors", async () => {
   assertDistBuilt();
   const previewServer = await preview({ configFile: false, root: repoRoot, build: { outDir: distDir }, preview: { port: previewPort, strictPort: true } });
-  const browser = await chromium.launch();
   try {
-    const page = await browser.newPage();
-    const pageProblems = collectPageProblems(page);
-    await stubExternalRequests(page);
-    await page.goto(`http://localhost:${previewPort}/`);
-    const editorInitialized = await waitForEditorCanvas(page);
-    const appRootChildCount = await page.locator("#app > *").count();
-
-    assert.deepStrictEqual(pageProblems, [], "the page reported errors");
-    assert.ok(appRootChildCount > 0, "#app is empty (white screen)");
-    assert.ok(editorInitialized, "the LiteGraph editor canvas was never initialized");
+    const browser = await chromium.launch();
+    try {
+      await assertAppRendersEditor(await browser.newPage());
+    } finally {
+      await browser.close();
+    }
   } finally {
-    await browser.close();
     await previewServer.close();
   }
 });

@@ -2,7 +2,7 @@
 
 ## 📋 Requirements
 
-- Node.js version 20 or later.
+- Node.js 22.18 or later (`yarn test` runs the TypeScript tests with Node's built-in type stripping).
 
 ![screen](docs/screen.png)
 
