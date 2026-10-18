@@ -17,7 +17,7 @@
     "@graphai/vanilla": "^2.0.12",
     "@unhead/vue": "^3.4.3",
     "core-js": "^3.50.0",
-    "firebase": "^13.0.0",
+    "firebase": "^12.17.0",
     "graphai": "^2.0.18",
     "litegraph.js": "^0.7.18",
     "pinia": "^4.1.0",
